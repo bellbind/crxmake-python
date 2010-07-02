@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- mode: python coding: utf-8 -*-
 """
-building chrome extension crx with commandline
+building google chrome extension crx with commandline
 it is inspired by rubygem's crxmake
 requires: M2Crypto module (and "openssl" commandline)
 """

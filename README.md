@@ -11,7 +11,7 @@ It is inspired by rubygems' crxmake.
 
 - python 2
 - M2Crypto
-- "openssl" command: because current M2Crypto lucks func for rsa pubout DER
+- "openssl" command: because current M2Crypto lacks func for rsa pubout DER
 
 ## appendix: m2crypto-0.20.2-enable-rsa-pubout.patch
 
