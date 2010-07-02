@@ -1,0 +1,52 @@
+Index: M2Crypto/RSA.py
+===================================================================
+--- M2Crypto/RSA.py	(revision 724)
++++ M2Crypto/RSA.py	(working copy)
+@@ -138,6 +138,25 @@
+         bio = BIO.openfile(file, 'wb')
+         return self.save_key_der_bio(bio)
+ 
++    def save_pub_key_der_bio(self, bio):
++        """
++        Save the public key to an M2Crypto.BIO.BIO object in DER format.
++
++        @type bio: M2Crypto.BIO.BIO
++        @param bio: M2Crypto.BIO.BIO object to save key to.
++        """
++        return m2.rsa_write_pub_key_der(self.rsa, bio._ptr())
++    
++    def save_pub_key_der(self, file):
++        """
++        Save the public key to a file in DER format.
++
++        @type file: str
++        @param file: Filename to save key to
++        """
++        bio = BIO.openfile(file, 'wb')
++        return self.save_pub_key_der_bio(bio)
++
+     def save_pub_key_bio(self, bio):
+         """
+         Save the public key to an M2Crypto.BIO.BIO object in PEM format.
+Index: SWIG/_rsa.i
+===================================================================
+--- SWIG/_rsa.i	(revision 724)
++++ SWIG/_rsa.i	(working copy)
+@@ -440,6 +440,17 @@
+ }
+ %}
+ 
++%threadallow rsa_write_pub_key_der;
++%inline %{
++int rsa_write_pub_key_der(RSA *rsa, BIO *bio) {
++  /*
++    it writes same format of  "openssl rsa -pubout -outform DER".
++    i2d_RSAPublicKey_bio(bio, rsa) writes no header struct data.
++  */
++  return i2d_RSA_PUBKEY_bio(bio, rsa); 
++}
++%}
++
+ %threadallow rsa_write_key_der;
+ %inline %{
+ int rsa_write_key_der(RSA *rsa, BIO *bio) {
