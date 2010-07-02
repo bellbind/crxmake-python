@@ -3,17 +3,17 @@
 Python script for building google chrome extension crx package.
 It is inspired by rubygems' crxmake.
 
-## usage:
+## Usage:
 
     crxmake.py PACKAGE_BASE_DIR
 
-## requires:
+## Requires:
 
 - python 2
 - M2Crypto
 - "openssl" command: because current M2Crypto lacks func for rsa pubout DER
 
-## appendix: m2crypto-0.20.2-enable-rsa-pubout.patch
+## Appendix: m2crypto-0.20.2-enable-rsa-pubout.patch
 
 "svn diff" output for appending the feature for rsa pubout DER.
 
@@ -24,3 +24,8 @@ Howto build m2crypto with it:
     patch -p0 < ../m2crypto-0.20.2-enable-rsa-pubout.patch
     python setup.py build
 
+## Resources:
+
+- "M2Crypto":http://chandlerproject.org/bin/view/Projects/MeTooCrypto
+- "crxmake":http://github.com/Constellation/crxmake
+- "Packing Chrome extensions in Python":http://grack.com/blog/2009/11/09/packing-chrome-extensions-in-python/
