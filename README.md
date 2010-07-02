@@ -24,6 +24,8 @@ Howto build m2crypto with it:
     patch -p0 < ../m2crypto-0.20.2-enable-rsa-pubout.patch
     python setup.py build
 
+(I hope someone send it to M2Crypto maintainer ^^)
+
 ## Resources:
 
 - "M2Crypto":http://chandlerproject.org/bin/view/Projects/MeTooCrypto
