@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- mode: python coding: utf-8 -*-
+
 """
 building google chrome extension crx with commandline
 it is inspired by rubygem's crxmake
 requires: M2Crypto module (and "openssl" commandline)
 """
+
 import dircache
 import hashlib
 import io
@@ -27,7 +29,7 @@ if dirname.endswith(os.path.sep): dirname = dirname[:-1]
 
 # make raw zip data
 zip_memory = io.BytesIO()
-zip = zipfile.ZipFile(zip_memory, "w", zipfile.ZIP_DEFLATED)
+zf = zipfile.ZipFile(zip_memory, "w", zipfile.ZIP_DEFLATED)
 def make_zip(z, path, parent):
     for ch in dircache.listdir(path):
         child = os.path.join(path, ch)
@@ -36,8 +38,8 @@ def make_zip(z, path, parent):
         if os.path.isdir(child): make_zip(z, child, name)
         pass
     pass
-make_zip(zip, dirname, "")
-zip.close()
+make_zip(zf, dirname, "")
+zf.close()
 zip_data = zip_memory.getvalue()
 
 # load or make private key PEM
