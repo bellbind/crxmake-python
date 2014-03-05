@@ -16,6 +16,7 @@
 import os
 import sys
 import io
+import argparse
 import tempfile
 import dircache
 import hashlib
@@ -134,3 +135,21 @@ def sign(data, pem):
     pkey.sign_update(data)
     signature = pkey.sign_final()
     return signature
+
+def argparser():
+    parser = argparse.ArgumentParser(description="crxmake ")
+    parser.add_argument("src", type=str, default='',
+                        help="Source directory containing unpacked chrome ext")
+    parser.add_argument("-o", "--output", type=str, default='',
+                        help="Output directory for packed .crx")
+    return parser
+
+def cli():
+    parser = argparser()
+    args = parser.parse_args()
+    if not args.src:
+        raise ValueError("src of app is required argument")
+    package(args.src)
+
+if __name__ == "__main__":
+    cli()

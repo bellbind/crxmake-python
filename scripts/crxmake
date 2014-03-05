@@ -14,16 +14,6 @@
 """
 
 import crxmake
-import argparse
-
-def argparser():
-    parser = argparse.ArgumentParser(description="crxmake ")
-    parser.add_argument("src", type=str, default='',
-                        help="Source directory containing unpacked chrome ext")
-    parser.add_argument("-o", "--output", type=str, default='',
-                        help="Output directory for packed .crx")
-    return parser
 
 if __name__ == "__main__":
-    parser = argparser()
-    args = parser.parse_args()
+    crxmake.cli()
