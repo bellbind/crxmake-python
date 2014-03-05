@@ -12,6 +12,15 @@ It is inspired by rubygems' crxmake.
 
     crxmake.py PACKAGE_BASE_DIR
 
+## Example
+
+An example extension named 'app' is provided in the examples/
+directory for testing purposes:
+
+    $ crxmake.py examples/app
+    $ ls examples/app
+    $ app app.crx app.pem
+
 ## Requires:
 
 - python 2

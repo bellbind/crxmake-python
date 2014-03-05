@@ -15,7 +15,7 @@ import os
 
 setup(
     name='crxmake',
-    version='0.0.02',
+    version='0.0.2',
     url='http://github.com/bellbind/crxmake',
     author='bellbind',
     author_email='bellbind@gmail.com',
