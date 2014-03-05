@@ -35,10 +35,10 @@ def rm_trailing_slash(d):
         >>> rm_trailing_slash('foo/bar/')
         'foo/bar'
     """
-    return d if d.endswith(os.path.sep) else dirname[:-1]
+    return d[:-1] if d.endswith(os.path.sep) else d
 
-def create_crx(basedir, pem_key=None, magic=MAGIC, version=VERSION):
-    """Create a crx chrome extension
+def package(basedir, pem_key=None, magic=MAGIC, version=VERSION):
+    """Create a chrome extension .crx package of a base directory
 
     params:
         basedir - the base directory where the application is located
@@ -49,7 +49,7 @@ def create_crx(basedir, pem_key=None, magic=MAGIC, version=VERSION):
 
     try:
         zipdata = zipdir(crxd)
-    except IOException as e:
+    except IOError as e:
         raise e
     pem, key = create_privatekey(crxd)
     sig = sign(zipdata, pem)
@@ -63,21 +63,24 @@ def create_crx(basedir, pem_key=None, magic=MAGIC, version=VERSION):
         for d in data:
             crx.write(d)
 
-def zipdir(directory, parent=""):
+def zipdir(directory):
     """Create a .zip of the directory in memory and return its data"""
     zip_memory = io.BytesIO()
     with zipfile.ZipFile(zip_memory, "w", zipfile.ZIP_DEFLATED) as zf:
-        for ch in dircache.listdir(directory):
-            child = os.path.join(directory, ch)
-            name = "%s/%s" % (parent, ch)
-            if os.path.isfile(child): z.write(child, name)
-            if os.path.isdir(child): make_zip(z, child, name)
-
-        make_zip(zf, dirname, "")
+        def _rec_zip(path, parent=""):
+            """utility method for recursively zipping"""
+            for d in dircache.listdir(path):
+                child = os.path.join(path, d)
+                name = "%s/%s" % (parent, d)
+                if os.path.isfile(child):
+                    zf.write(child, name)
+                if os.path.isdir(child):
+                    _rec_zip(child, name)
+        _rec_zip(directory, "")
         zf.close()
-        zip_data = zip_memory.getvalue()
-        return data
-    raise IOException("Failed to create zip")
+        zipdata = zip_memory.getvalue()
+        return zipdata
+    raise IOError("Failed to create zip")
 
 def create_publickey(crxd, key):
     """generate public key DER"""
@@ -94,15 +97,15 @@ def create_publickey(crxd, key):
 def create_privatekey(path):
     """Create a private key PEM file"""
     pemfile = "%s.pem" % path
-    if os.path.exists(pemfile):        
+    if os.path.exists(pemfile):
         with open(pemfile, "r") as pf:
             key = M2Crypto.RSA.load_key(pemfile)
             pem = pf.read()
             return pem, key
-    with open(pem_name, "w") as pf:
+    with open(pemfile, "w") as pf:
         key = M2Crypto.RSA.gen_key(1024, 65537, lambda: None)
         pem = key.as_pem(cipher=None)
-        pf.write(private_pem)
+        pf.write(pem)
         return pem, key
 
 def sign(data, pem):

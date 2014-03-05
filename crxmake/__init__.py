@@ -10,4 +10,4 @@ __author__ = [
 __license__ = "see LICENSE"
 __contributors__ = "see AUTHORS"
 
-import crxmake
+from crxmake import package
