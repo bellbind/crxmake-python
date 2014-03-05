@@ -13,13 +13,14 @@
     :license: pending, see LICENSE for more details.
 """
 
+import os
+import sys
+import io
+import tempfile
 import dircache
 import hashlib
-import io
-import os
 import struct
 import subprocess
-import sys
 import zipfile
 import M2Crypto.EVP
 import M2Crypto.RSA
@@ -37,18 +38,22 @@ def rm_trailing_slash(d):
     """
     return d[:-1] if d.endswith(os.path.sep) else d
 
-def package(basedir, pem_key=None, magic=MAGIC, version=VERSION):
+def package(basedir, files=None, magic=MAGIC, version=VERSION):
     """Create a chrome extension .crx package of a base directory
 
     params:
         basedir - the base directory where the application is located
+        files - a dict of {filepath: filecontents} to inject before
+                packing.  Useful for dynamically injecting configs or
+                keys within projects. Filenames are relative to basedir.
+                i.e. 'scripts/config.js'
     """
     if not os.path.isdir(basedir):
         raise IOError("Non-existant directory <%s>" % basedir)
     crxd = rm_trailing_slash(basedir)
 
     try:
-        zipdata = zipdir(crxd)
+        zipdata = zipdir(crxd, inject=files)
     except IOError as e:
         raise e
     pem, key = create_privatekey(crxd)
@@ -63,12 +68,23 @@ def package(basedir, pem_key=None, magic=MAGIC, version=VERSION):
         for d in data:
             crx.write(d)
 
-def zipdir(directory):
-    """Create a .zip of the directory in memory and return its data"""
+def zipdir(directory, inject=None):
+    """Create a .zip of the directory in memory and return its data
+
+    params:
+        inject - dict allows you to inject content into an app
+                 (such as config files, keys, or secrets). The
+                 format is {'filepath': 'file contents ...'}.
+    """
     zip_memory = io.BytesIO()
     with zipfile.ZipFile(zip_memory, "w", zipfile.ZIP_DEFLATED) as zf:
-        def _rec_zip(path, parent=""):
+        def _rec_zip(path, parent="", inject=None):
             """utility method for recursively zipping"""
+            if inject:
+                for fname, fdata in inject.items():
+                    fpath = '%s/%s' % (directory, fname)
+                    zf.writestr(fname, fdata) 
+
             for d in dircache.listdir(path):
                 child = os.path.join(path, d)
                 name = "%s/%s" % (parent, d)
@@ -76,7 +92,8 @@ def zipdir(directory):
                     zf.write(child, name)
                 if os.path.isdir(child):
                     _rec_zip(child, name)
-        _rec_zip(directory, "")
+
+        _rec_zip(directory, "", inject=inject)
         zf.close()
         zipdata = zip_memory.getvalue()
         return zipdata

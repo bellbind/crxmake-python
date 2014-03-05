@@ -4,5 +4,6 @@ v0.0.2, Tue 04, March 2014 -- Refactor
 - added .travis.yml and test case placeholder
 - setup.py for easy installation
 - added swig as os level dependency within README
+- added file injection (inject files from memory into zip dynamically)
 
 v0.0.1, Fri 02, Jul 2010  -- Initial Release. (bellbind)
