@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+# -*- mode: python coding: utf-8 -*-
+
+"""
+    crxmake
+    ~~~~~~~
+
+    building google chrome extension crx with commandline
+    it is inspired by rubygem's crxmake
+    requires: M2Crypto module (and "openssl" commandline)
+
+    :copyright: (c) 2010 bellbind
+    :license: pending, see LICENSE for more details.
+"""
+
+import crxmake
+import argparse
+
+def argparser():
+    parser = argparse.ArgumentParser(description="crxmake ")
+    parser.add_argument("src", type=str, default='',
+                        help="Source directory containing unpacked chrome ext")
+    parser.add_argument("-o", "--output", type=str, default='',
+                        help="Output directory for packed .crx")
+    return parser
+
+if __name__ == "__main__":
+    parser = argparser()
+    args = parser.parse_args()
