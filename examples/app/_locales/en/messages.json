@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "CrxmakeTestApp",
+    "description": "Test chrome extension"
+  },
+  "appDescription": {
+    "message": "Test chrome extension",
+    "description": "Tests python crxmake chrome extension packager"
+  }
+}
